@@ -53,7 +53,7 @@ body {
 /* Modal */
 .card {
   background: rgba(255,255,255,0.18);
-  padding: 50px;
+  padding: 48px;
   border-radius: 28px;
   max-width: 560px;
   width: 90%;
@@ -71,7 +71,7 @@ body {
 }
 
 button {
-  margin-top: 20px;
+  margin-top: 18px;
   padding: 14px 30px;
   border: none;
   border-radius: 30px;
@@ -81,21 +81,22 @@ button {
   cursor: pointer;
 }
 
+/* Carta */
 #carta {
-  margin-top: 25px;
+  margin-top: 22px;
   text-align: left;
-  line-height: 1.7;
-  font-size: 1.15em;
+  line-height: 1.6;
+  font-size: 1.12em;
 }
 
 #carta strong {
   color: #fff6c9;
-  display: block;
-  margin: 6px 0;
+  font-weight: 700;
 }
 
+/* Pregunta */
 #pregunta, #respuestas {
-  margin-top: 25px;
+  margin-top: 22px;
   opacity: 0;
   transition: opacity 1.5s;
 }
@@ -116,53 +117,40 @@ button {
 
 <div id="fondo"><div class="aurora"></div></div>
 
-<audio id="musica" loop>
+<audio id="musica" loop preload="auto">
   <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?raw=1" type="audio/mpeg">
 </audio>
 
-<audio id="sonidoLetra" src="https://freesound.org/data/previews/341/341695_5121236-lq.mp3"></audio>
-
 <div class="card" id="modal">
-  <h1>Para Ti 💕</h1>
+  <h1>Para Ti Bakita💕</h1>
   <p>Hay algo que quiero decirte…</p>
+
   <button onclick="iniciar()">Ábreme 💌</button>
 
   <div id="carta"></div>
 
   <div id="pregunta">¿Quieres ser mi San Valentín? 💖</div>
   <div id="respuestas">
-    <button>Sí 💕</button>
-    <button>Obvio 😌</button>
+    <button onclick="respuesta('Sí 💕')">Sí 💕</button>
+    <button onclick="respuesta('Obvio 😌')">Obvio 😌</button>
   </div>
 </div>
 
 <script>
-/* Texto dividido en bloques HTML */
+/* Contenido de la carta (compacto y elegante) */
 const bloques = [
-  "<strong>Hace años compartimos risas, aventuras y sueños,</strong>",
-  "y aunque la vida nos llevó por caminos distintos,",
-  "<strong>el destino nos volvió a reunir.</strong>",
-  "<br>",
-  "Recordar nuestras charlas sobre animes en el carro,",
-  "las teorías, las canciones locas y las risas compartidas,",
-  "<strong>siempre me hace sonreír.</strong>",
-  "<br>",
-  "Me alegra que podamos retomar esta amistad,",
-  "y aunque hoy solo seamos amigos,",
-  "<strong>voy a luchar por ganarme la oportunidad<br>de que algún día me veas de otra manera 💖😉</strong>",
-  "<br>",
-  "No sé qué nos depare el futuro,",
-  "<strong>pero sí sé que quiero descubrirlo contigo, Bakita.</strong>",
-  "<br>",
+  "<strong>Hace años compartimos risas, aventuras y sueños,</strong> y aunque la vida nos llevó por caminos distintos, <strong>el destino nos volvió a reunir.</strong>",
+  "Recordar nuestras charlas sobre animes en el carro, las teorías, las canciones locas y las risas compartidas, <strong>siempre me hace sonreír.</strong>",
+  "Me alegra que podamos retomar esta amistad y, aunque hoy solo seamos amigos, <strong>voy a luchar por ganarme la oportunidad de que algún día me veas de otra manera 💖😉</strong>",
+  "No sé qué nos depare el futuro, pero <strong>sí sé que quiero descubrirlo contigo, Bakita.</strong>",
   "Con todo mi kokoro 💖"
 ];
 
 let index = 0;
 const carta = document.getElementById("carta");
-const sonido = document.getElementById("sonidoLetra");
 
 /* Estrellas */
-for(let i=0;i<180;i++){
+for(let i=0;i<160;i++){
   const s=document.createElement("div");
   s.className="star";
   s.style.top=Math.random()*100+"%";
@@ -172,22 +160,23 @@ for(let i=0;i<180;i++){
 }
 
 function iniciar(){
-  document.getElementById("musica").play().catch(()=>{});
+  // Intento de audio (limitado por WhatsApp WebView)
+  const audio = document.getElementById("musica");
+  audio.play().catch(()=>{});
+
   document.getElementById("modal").classList.add("vibrate");
   escribirBloque();
-  setInterval(crearCorazon, 400);
+  setInterval(crearCorazon, 450);
 }
 
 function escribirBloque(){
   if(index < bloques.length){
-    carta.innerHTML += bloques[index] + "<br>";
-    sonido.currentTime=0;
-    sonido.play().catch(()=>{});
+    carta.innerHTML += bloques[index] + "<br><br>";
     index++;
     setTimeout(escribirBloque, 550);
   } else {
-    document.getElementById("pregunta").style.opacity=1;
-    document.getElementById("respuestas").style.opacity=1;
+    document.getElementById("pregunta").style.opacity = 1;
+    document.getElementById("respuestas").style.opacity = 1;
   }
 }
 
@@ -196,9 +185,16 @@ function crearCorazon(){
   h.className="heart";
   h.innerHTML=["❤️","💖","💕","💘"][Math.floor(Math.random()*4)];
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=(Math.random()*24+16)+"px";
+  h.style.fontSize=(Math.random()*22+16)+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
+}
+
+function respuesta(valor){
+  document.getElementById("respuestas").innerHTML =
+    `<p style="font-size:1.5em; text-align:center;">
+      Me encanta que hayas dicho <strong>${valor}</strong> 💖✨
+    </p>`;
 }
 </script>
 
