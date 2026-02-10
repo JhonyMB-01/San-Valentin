@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Ti 💖</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      color: white;
+      text-align: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 380px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1em;
+      border: none;
+      border-radius: 30px;
+      background: #ff3366;
+      color: white;
+      cursor: pointer;
+    }
+
+    #carta {
+      margin-top: 20px;
+      font-size: 1.1em;
+      line-height: 1.6;
+      white-space: pre-line;
+      min-height: 120px;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      animation: float 4s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎵 AUDIO DESDE ONEDRIVE -->
+  <audio id="musica" loop preload="auto">
+    <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?rlkey=lii70hxs5eq1pn6g1dho65icm&st=438qr7a7&raw=1" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+    <h1>Para Ti 💕</h1>
+    <p>Hay algo que quiero decirte…</p>
+    <button onclick="iniciar()">Ábreme 💌</button>
+    <div id="carta"></div>
+  </div>
+
+  <script>
+    const carta = document.getElementById("carta");
+    const musica = document.getElementById("musica");
+
+    const textoCarta = `
+Desde que llegaste,
+mi mundo es un lugar más bonito.
+
+No sé qué nos depare el futuro,
+pero sí sé que me encanta compartirlo contigo.
+
+Gracias por ser tú 💖
+`;
+
+    let i = 0;
+
+    function iniciar() {
+      musica.play().catch(() => {});
+      escribir();
+      for (let j = 0; j < 20; j++) crearCorazon();
+    }
+
+    function escribir() {
+      if (i < textoCarta.length) {
+        carta.innerHTML += textoCarta.charAt(i++);
+        setTimeout(escribir, 40);
+      }
+    }
+
+    function crearCorazon() {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.innerHTML = "❤️";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (Math.random() * 2 + 3) + "s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 4000);
+    }
+  </script>
+
+</body>
+</html>
