@@ -67,7 +67,7 @@
   </audio>
 
   <div class="card">
-    <h1>Para Ti 💕</h1>
+    <h1>Para Ti Bakita💕</h1>
     <p>Hay algo que quiero decirte…</p>
     <button onclick="iniciar()">Ábreme 💌</button>
     <div id="carta"></div>
@@ -88,12 +88,21 @@ Gracias por ser tú 💖
 `;
 
     let i = 0;
+    let intervaloCorazones = null;
+
 
     function iniciar() {
-      musica.play().catch(() => {});
-      escribir();
-      for (let j = 0; j < 20; j++) crearCorazon();
-    }
+  document.getElementById("musica").play();
+  escribir();
+
+  // Evita crear múltiples intervalos
+  if (!intervaloCorazones) {
+    intervaloCorazones = setInterval(() => {
+      crearCorazon();
+    }, 300); // cada 300 ms (ajusta si quieres más o menos corazones)
+  }
+}
+
 
     function escribir() {
       if (i < textoCarta.length) {
