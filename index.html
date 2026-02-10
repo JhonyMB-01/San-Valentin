@@ -3,255 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <title>Para Ti 💖</title>
+
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Georgia', serif;
-    text-align: center;
-    background: #0d0d1a;
-    color: white;
-  }
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+  background: #0d0d1a;
+  color: white;
+}
 
-  /* Fondo animado tipo aurora + estrellas */
-  #fondo {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, #0d0d1a, #1a1a2e, #0d0d1a);
-    overflow: hidden;
-    z-index: -2;
-  }
-  .aurora {
-    position: absolute;
-    width: 300%;
-    height: 200%;
-    top: -50%;
-    left: -100%;
-    background: radial-gradient(circle at 50% 50%, rgba(255,100,180,0.2), transparent 70%);
-    animation: moverAurora 15s linear infinite alternate;
-    filter: blur(60px);
-  }
-  @keyframes moverAurora {
-    0% { transform: rotate(0deg) translateX(0) translateY(0); }
-    100% { transform: rotate(30deg) translateX(100px) translateY(50px); }
-  }
+/* Fondo aurora */
+#fondo {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(120deg, #0d0d1a, #1a1a2e, #0d0d1a);
+  z-index: -2;
+}
+.aurora {
+  position: absolute;
+  width: 300%;
+  height: 200%;
+  top: -50%;
+  left: -100%;
+  background: radial-gradient(circle, rgba(255,100,180,.25), transparent 70%);
+  filter: blur(60px);
+  animation: auroraMove 18s infinite alternate;
+}
+@keyframes auroraMove {
+  to { transform: rotate(25deg) translate(120px,60px); }
+}
 
-  .star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    opacity: 0;
-    animation: twinkle 3s infinite;
-  }
-  @keyframes twinkle { 0%,100% {opacity:0;} 50% {opacity:1;} }
+/* Estrellas */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: twinkle 3s infinite;
+}
+@keyframes twinkle { 50% {opacity:1;} }
 
-  .card {
-    background: rgba(255,255,255,0.18);
-    padding: 50px 45px;
-    border-radius: 28px;
-    width: 90%;
-    max-width: 550px;
-    min-height: 520px;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.45);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: transform 0.3s ease;
-    z-index: 2;
-  }
+/* Modal */
+.card {
+  background: rgba(255,255,255,0.18);
+  padding: 50px;
+  border-radius: 28px;
+  max-width: 560px;
+  width: 90%;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 25px 60px rgba(0,0,0,.45);
+  text-align: center;
+}
 
-  .card.vibrate { animation: vibrar 0.3s ease-in-out infinite alternate; }
-  @keyframes vibrar {
-    0% { transform: translate(0,0);}
-    25% { transform: translate(2px,-2px);}
-    50% { transform: translate(-2px,2px);}
-    75% { transform: translate(2px,2px);}
-    100% { transform: translate(-2px,-2px);}
-  }
+.card.vibrate {
+  animation: vibrar .25s infinite alternate;
+}
+@keyframes vibrar {
+  from {transform: translate(1px,-1px);}
+  to {transform: translate(-1px,1px);}
+}
 
-  button {
-    margin-top: 18px;
-    padding: 14px 30px;
-    font-size: 1.05em;
-    border: none;
-    border-radius: 30px;
-    background: #ff3366;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-  button:hover { transform: scale(1.1); }
+button {
+  margin-top: 20px;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 30px;
+  background: #ff3366;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
 
-  #carta {
-    margin-top: 20px;
-    font-size: 1.16em;
-    line-height: 1.7;
-    white-space: pre-line;
-    min-height: 200px;
-    text-align: left;
-  }
-  #carta strong {
-    font-weight: 700;
-    color: #fff8d6;
-    display: block;
-    margin: 5px 0;
-  }
+#carta {
+  margin-top: 25px;
+  text-align: left;
+  line-height: 1.7;
+  font-size: 1.15em;
+}
 
-  #pregunta, #respuestas {
-    margin-top: 24px;
-    opacity: 0;
-    transition: opacity 1.8s ease;
-  }
+#carta strong {
+  color: #fff6c9;
+  display: block;
+  margin: 6px 0;
+}
 
-  .heart, .rocket, .confeti {
-    position: absolute;
-    user-select: none;
-    pointer-events: none;
-  }
+#pregunta, #respuestas {
+  margin-top: 25px;
+  opacity: 0;
+  transition: opacity 1.5s;
+}
 
-  @keyframes float {
-    0% { transform: translateY(100vh) scale(0.6); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
-  }
-  @keyframes caer { 0% {transform: translateY(-50px); opacity:1;} 100% {transform: translateY(110vh); opacity:0;} }
+/* Corazones */
+.heart {
+  position: absolute;
+  animation: subir 6s linear forwards;
+}
+@keyframes subir {
+  from {transform: translateY(100vh); opacity:0;}
+  to {transform: translateY(-10vh); opacity:1;}
+}
 </style>
 </head>
+
 <body>
 
-<div id="fondo">
-  <div class="aurora"></div>
-</div>
+<div id="fondo"><div class="aurora"></div></div>
 
 <audio id="musica" loop>
-  <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?rlkey=lii70hxs5eq1pn6g1dho65icm&st=438qr7a7&raw=1" type="audio/mpeg">
+  <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?raw=1" type="audio/mpeg">
 </audio>
 
-<!-- Sonido por letra -->
 <audio id="sonidoLetra" src="https://freesound.org/data/previews/341/341695_5121236-lq.mp3"></audio>
 
 <div class="card" id="modal">
   <h1>Para Ti 💕</h1>
-  <p>Hay algo que llevo en el corazón…</p>
+  <p>Hay algo que quiero decirte…</p>
   <button onclick="iniciar()">Ábreme 💌</button>
+
   <div id="carta"></div>
-  <div id="pregunta">¿Quieres ser mi San Valentín? 💍💖</div>
+
+  <div id="pregunta">¿Quieres ser mi San Valentín? 💖</div>
   <div id="respuestas">
-    <button onclick="respuesta('Sí 💖')">Sí 💖</button>
-    <button onclick="respuesta('Obvio 💕')">Obvio 💕</button>
+    <button>Sí 💕</button>
+    <button>Obvio 😌</button>
   </div>
 </div>
 
 <script>
-const textoCarta = `
-<strong>Hace años compartimos risas, aventuras y sueños,</strong>
-y aunque la vida nos llevó por caminos distintos,
-<strong>el destino nos volvió a reunir.</strong>
+/* Texto dividido en bloques HTML */
+const bloques = [
+  "<strong>Hace años compartimos risas, aventuras y sueños,</strong>",
+  "y aunque la vida nos llevó por caminos distintos,",
+  "<strong>el destino nos volvió a reunir.</strong>",
+  "<br>",
+  "Recordar nuestras charlas sobre animes en el carro,",
+  "las teorías, las canciones locas y las risas compartidas,",
+  "<strong>siempre me hace sonreír.</strong>",
+  "<br>",
+  "Me alegra que podamos retomar esta amistad,",
+  "y aunque hoy solo seamos amigos,",
+  "<strong>voy a luchar por ganarme la oportunidad<br>de que algún día me veas de otra manera 💖😉</strong>",
+  "<br>",
+  "No sé qué nos depare el futuro,",
+  "<strong>pero sí sé que quiero descubrirlo contigo, Bakita.</strong>",
+  "<br>",
+  "Con todo mi kokoro 💖"
+];
 
-Recordar nuestros charlas sobre animes en el carro,
-las teorías, las canciones locas, y las risas compartidas,
-<strong>siempre me hace sonreír.</strong>
+let index = 0;
+const carta = document.getElementById("carta");
+const sonido = document.getElementById("sonidoLetra");
 
-Me alegra que podamos retomar esta amistad,
-y aunque hoy solo seamos amigos,
-<strong>te advierto… voy a luchar por ganarme
-la oportunidad de que algún día me veas de otra manera 💖😉</strong>
-
-No sé qué nos depare el futuro,
-<strong>pero sí sé que quiero descubrirlo contigo, Bakita.</strong>
-
-Con todo mi kokoro 💖
-`;
-
-let i=0, intervaloCorazones=null, velocidadCorazones=900;
-const corazones=["❤️","💖","💘","💕","💗"];
-const audioLetra = document.getElementById("sonidoLetra");
-
-// Estrellas aleatorias
-for(let s=0;s<200;s++){
-  let star=document.createElement("div");
-  star.className="star";
-  star.style.width=star.style.height=(Math.random()*2+1)+"px";
-  star.style.top=Math.random()*100+"%";
-  star.style.left=Math.random()*100+"%";
-  star.style.animationDuration=(Math.random()*3+2)+"s";
-  document.body.appendChild(star);
+/* Estrellas */
+for(let i=0;i<180;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.top=Math.random()*100+"%";
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=(Math.random()*3+2)+"s";
+  document.body.appendChild(s);
 }
 
 function iniciar(){
-  const audio=document.getElementById("musica");
-  audio.volume=0.8;
-  audio.play().catch(()=>{});
-
+  document.getElementById("musica").play().catch(()=>{});
   document.getElementById("modal").classList.add("vibrate");
-  escribir();
-  if(!intervaloCorazones){
-    intervaloCorazones=setInterval(crearCorazon, velocidadCorazones);
-    const acelerador=setInterval(()=>{
-      if(velocidadCorazones>250){
-        velocidadCorazones-=110;
-        clearInterval(intervaloCorazones);
-        intervaloCorazones=setInterval(crearCorazon, velocidadCorazones);
-      }else clearInterval(acelerador);
-    },2000);
-  }
+  escribirBloque();
+  setInterval(crearCorazon, 400);
 }
 
-function escribir(){
-  if(i<textoCarta.length){
-    carta.innerHTML+=textoCarta.charAt(i++);
-    // Sonido letra
-    if(!textoCarta.charAt(i).match(/\s/)){
-      audioLetra.currentTime=0;
-      audioLetra.play().catch(()=>{});
-    }
-    setTimeout(escribir,45);
-  }else{
-    setTimeout(()=>{
-      document.getElementById("pregunta").style.opacity=1;
-      document.getElementById("respuestas").style.opacity=1;
-    },1000);
+function escribirBloque(){
+  if(index < bloques.length){
+    carta.innerHTML += bloques[index] + "<br>";
+    sonido.currentTime=0;
+    sonido.play().catch(()=>{});
+    index++;
+    setTimeout(escribirBloque, 550);
+  } else {
+    document.getElementById("pregunta").style.opacity=1;
+    document.getElementById("respuestas").style.opacity=1;
   }
 }
 
 function crearCorazon(){
   const h=document.createElement("div");
   h.className="heart";
-  h.innerHTML=corazones[Math.floor(Math.random()*corazones.length)];
-  const size=Math.random()*26+16;
-  h.style.fontSize=size+"px";
+  h.innerHTML=["❤️","💖","💕","💘"][Math.floor(Math.random()*4)];
   h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=(Math.random()*2+4)+"s";
-  h.style.animationName="float";
+  h.style.fontSize=(Math.random()*24+16)+"px";
   document.body.appendChild(h);
-  setTimeout(()=>{
-    let r=document.createElement("div");
-    r.className="rocket";
-    r.innerHTML="💥";
-    r.style.left=h.style.left;
-    r.style.top=(window.innerHeight - 50)+"px";
-    r.style.fontSize=(Math.random()*20+16)+"px";
-    document.body.appendChild(r);
-    setTimeout(()=>r.remove(),1000);
-    h.remove();
-  },6000);
-}
-
-function respuesta(tipo){
-  for(let j=0;j<50;j++){
-    const c=document.createElement("div");
-    c.className="confeti";
-    c.innerHTML="🎉";
-    c.style.left=Math.random()*100+"vw";
-    c.style.fontSize=Math.random()*20+18+"px";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3500);
-  }
-  document.getElementById("respuestas").innerHTML=
-    `<p style="font-size:1.6em; margin-top:10px;">¡Me encanta que dijeras "${tipo}"! 💖✨</p>`;
+  setTimeout(()=>h.remove(),6000);
 }
 </script>
 
