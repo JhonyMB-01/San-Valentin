@@ -2,19 +2,30 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Ti 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti Baka 💖</title>
 
 <style>
+:root{
+  --rosa:#ff3366;
+}
+
+*{
+  box-sizing:border-box;
+}
+
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: 'Georgia', serif;
   background: #0d0d1a;
   color: white;
+  padding: 1rem;
 }
 
 /* Fondo aurora */
@@ -53,10 +64,12 @@ body {
 /* Modal */
 .card {
   background: rgba(255,255,255,0.18);
-  padding: 48px;
-  border-radius: 28px;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 24px;
   max-width: 560px;
-  width: 90%;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
   backdrop-filter: blur(14px);
   box-shadow: 0 25px 60px rgba(0,0,0,.45);
   text-align: center;
@@ -70,35 +83,56 @@ body {
   to {transform: translate(-1px,1px);}
 }
 
+h1{
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+p{
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+}
+
 button {
-  margin-top: 18px;
-  padding: 14px 30px;
+  margin-top: 1rem;
+  padding: .9rem 1.8rem;
   border: none;
   border-radius: 30px;
-  background: #ff3366;
+  background: var(--rosa);
   color: white;
-  font-size: 1em;
+  font-size: clamp(.95rem, 2.5vw, 1rem);
   cursor: pointer;
+  width: 100%;
+  max-width: 260px;
+}
+
+#respuestas button{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 /* Carta */
 #carta {
-  margin-top: 22px;
+  margin-top: 1.2rem;
   text-align: left;
   line-height: 1.6;
-  font-size: 1.12em;
+  font-size: clamp(1rem, 2.8vw, 1.12rem);
 }
 
 #carta strong {
   color: #fff6c9;
-  font-weight: 700;
 }
 
-/* Pregunta */
+/* Pregunta y respuestas */
 #pregunta, #respuestas {
-  margin-top: 22px;
+  margin-top: 1.2rem;
   opacity: 0;
-  transition: opacity 1.5s;
+  visibility: hidden;
+  transition: opacity 1.2s ease;
+}
+
+.mostrar {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Corazones */
@@ -110,6 +144,19 @@ button {
   from {transform: translateY(100vh); opacity:0;}
   to {transform: translateY(-10vh); opacity:1;}
 }
+
+/* Animación final */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajustes móviles */
+@media (max-width:480px){
+  .aurora{
+    filter: blur(40px);
+  }
+}
 </style>
 </head>
 
@@ -118,11 +165,11 @@ button {
 <div id="fondo"><div class="aurora"></div></div>
 
 <audio id="musica" loop preload="auto">
-  <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?raw=1" type="audio/mpeg">
+  <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?rlkey=lii70hxs5eq1pn6g1dho65icm&st=438qr7a7&raw=1" type="audio/mpeg">
 </audio>
 
 <div class="card" id="modal">
-  <h1>Para Ti Bakita💕</h1>
+  <h1>Para Ti Bakita 💕</h1>
   <p>Hay algo que quiero decirte…</p>
 
   <button onclick="iniciar()">Ábreme 💌</button>
@@ -137,7 +184,6 @@ button {
 </div>
 
 <script>
-/* Contenido de la carta (compacto y elegante) */
 const bloques = [
   "<strong>Hace años compartimos risas, aventuras y sueños,</strong> y aunque la vida nos llevó por caminos distintos, <strong>el destino nos volvió a reunir.</strong>",
   "Recordar nuestras charlas sobre animes en el carro, las teorías, las canciones locas y las risas compartidas, <strong>siempre me hace sonreír.</strong>",
@@ -147,10 +193,12 @@ const bloques = [
 ];
 
 let index = 0;
+let intervaloCorazones;
 const carta = document.getElementById("carta");
 
-/* Estrellas */
-for(let i=0;i<160;i++){
+/* Estrellas adaptativas */
+const estrellas = window.innerWidth < 600 ? 80 : 160;
+for(let i=0;i<estrellas;i++){
   const s=document.createElement("div");
   s.className="star";
   s.style.top=Math.random()*100+"%";
@@ -160,13 +208,13 @@ for(let i=0;i<160;i++){
 }
 
 function iniciar(){
-  // Intento de audio (limitado por WhatsApp WebView)
   const audio = document.getElementById("musica");
+  audio.volume = 0.7;
   audio.play().catch(()=>{});
 
   document.getElementById("modal").classList.add("vibrate");
   escribirBloque();
-  setInterval(crearCorazon, 450);
+  intervaloCorazones = setInterval(crearCorazon, 500);
 }
 
 function escribirBloque(){
@@ -175,8 +223,9 @@ function escribirBloque(){
     index++;
     setTimeout(escribirBloque, 550);
   } else {
-    document.getElementById("pregunta").style.opacity = 1;
-    document.getElementById("respuestas").style.opacity = 1;
+    document.getElementById("pregunta").classList.add("mostrar");
+    document.getElementById("respuestas").classList.add("mostrar");
+    document.getElementById("pregunta").scrollIntoView({behavior:"smooth"});
   }
 }
 
@@ -185,16 +234,21 @@ function crearCorazon(){
   h.className="heart";
   h.innerHTML=["❤️","💖","💕","💘"][Math.floor(Math.random()*4)];
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=(Math.random()*22+16)+"px";
+  h.style.fontSize=(Math.random()*20+14)+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 }
 
 function respuesta(valor){
-  document.getElementById("respuestas").innerHTML =
-    `<p style="font-size:1.5em; text-align:center;">
-      Me encanta que hayas dicho <strong>${valor}</strong> 💖✨
-    </p>`;
+  clearInterval(intervaloCorazones);
+  document.getElementById("modal").classList.remove("vibrate");
+
+  document.getElementById("respuestas").innerHTML = `
+    <p style="font-size:clamp(1.2rem,4vw,1.6rem); animation:fadeIn 1.2s;">
+      Me encanta que hayas dicho <strong>${valor}</strong> 💖✨<br>
+      Prometo hacerte sonreír siempre 🌹
+    </p>
+  `;
 }
 </script>
 
