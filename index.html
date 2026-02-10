@@ -19,18 +19,34 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.18);
-      padding: 40px;
-      border-radius: 20px;
-      max-width: 380px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      background: rgba(255, 255, 255, 0.22);
+      padding: 50px 45px;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 460px;
+      min-height: 440px;
+
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      animation: latido 4s ease-in-out infinite;
+    }
+
+    @keyframes latido {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(1px, -1px); }
+      50% { transform: translate(-1px, 1px); }
+      75% { transform: translate(1px, 1px); }
     }
 
     button {
-      margin-top: 20px;
-      padding: 12px 25px;
-      font-size: 1em;
+      margin-top: 25px;
+      padding: 14px 28px;
+      font-size: 1.05em;
       border: none;
       border-radius: 30px;
       background: #ff3366;
@@ -39,30 +55,47 @@
     }
 
     #carta {
-      margin-top: 20px;
-      font-size: 1.1em;
-      line-height: 1.6;
+      margin-top: 25px;
+      font-size: 1.15em;
+      line-height: 1.7;
       white-space: pre-line;
-      min-height: 120px;
+      min-height: 140px;
+    }
+
+    #pregunta {
+      margin-top: 25px;
+      font-size: 1.5em;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 2s ease;
     }
 
     .heart {
       position: absolute;
-      font-size: 24px;
-      animation: float 4s linear infinite;
+      animation: float 5s linear infinite;
+      user-select: none;
+      pointer-events: none;
     }
 
     @keyframes float {
-      0% { transform: translateY(100vh); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(-10vh); opacity: 0; }
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🎵 AUDIO DESDE ONEDRIVE -->
-  <audio id="musica" loop preload="auto">
+  <!-- AUDIO (puedes usar enlace directo Google Drive / OneDrive) -->
+  <audio id="musica" preload="auto">
     <source src="https://www.dropbox.com/scl/fi/x0zybmvanqoi3kl1ozuf7/One-Piece-Ending-1-Memories-Sub-mp3cut.net.mp3?rlkey=lii70hxs5eq1pn6g1dho65icm&st=438qr7a7&raw=1" type="audio/mpeg">
   </audio>
 
@@ -71,54 +104,73 @@
     <p>Hay algo que quiero decirte…</p>
     <button onclick="iniciar()">Ábreme 💌</button>
     <div id="carta"></div>
+    <div id="pregunta">¿Quieres ser mi San Valentín? 💖</div>
   </div>
 
   <script>
-    const carta = document.getElementById("carta");
-    const musica = document.getElementById("musica");
-
     const textoCarta = `
 Desde que llegaste,
-mi mundo es un lugar más bonito.
+mi mundo se volvió un lugar más bonito.
+
+Me gusta cómo sonríes,
+cómo hablas,
+cómo haces que todo tenga sentido.
 
 No sé qué nos depare el futuro,
-pero sí sé que me encanta compartirlo contigo.
+pero sé que quiero descubrirlo contigo.
 
-Gracias por ser tú 💖
+Con todo mi corazón 💖
 `;
 
     let i = 0;
     let intervaloCorazones = null;
+    let velocidadCorazones = 900;
 
+    const corazones = ["❤️", "💖", "💘", "💕", "💗"];
 
     function iniciar() {
-  document.getElementById("musica").play();
-  escribir();
+      document.getElementById("musica").play().catch(() => {});
+      escribir();
 
-  // Evita crear múltiples intervalos
-  if (!intervaloCorazones) {
-    intervaloCorazones = setInterval(() => {
-      crearCorazon();
-    }, 300); // cada 300 ms (ajusta si quieres más o menos corazones)
-  }
-}
+      if (!intervaloCorazones) {
+        intervaloCorazones = setInterval(crearCorazon, velocidadCorazones);
 
+        const acelerador = setInterval(() => {
+          if (velocidadCorazones > 250) {
+            velocidadCorazones -= 120;
+            clearInterval(intervaloCorazones);
+            intervaloCorazones = setInterval(crearCorazon, velocidadCorazones);
+          } else {
+            clearInterval(acelerador);
+          }
+        }, 2000);
+      }
+    }
 
     function escribir() {
       if (i < textoCarta.length) {
         carta.innerHTML += textoCarta.charAt(i++);
-        setTimeout(escribir, 40);
+        setTimeout(escribir, 45);
+      } else {
+        setTimeout(() => {
+          document.getElementById("pregunta").style.opacity = 1;
+        }, 1500);
       }
     }
 
     function crearCorazon() {
       const h = document.createElement("div");
       h.className = "heart";
-      h.innerHTML = "❤️";
+      h.innerHTML = corazones[Math.floor(Math.random() * corazones.length)];
+
+      const size = Math.random() * 20 + 16;
+      h.style.fontSize = size + "px";
       h.style.left = Math.random() * 100 + "vw";
-      h.style.animationDuration = (Math.random() * 2 + 3) + "s";
+      h.style.animationDuration = (Math.random() * 2 + 4) + "s";
+
       document.body.appendChild(h);
-      setTimeout(() => h.remove(), 4000);
+
+      setTimeout(() => h.remove(), 6000);
     }
   </script>
 
